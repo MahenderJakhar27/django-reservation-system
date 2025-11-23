@@ -8,4 +8,5 @@ urlpatterns = [
     path('reservation', views.home, ),       
     path('api/reservations/', views.create_reservation),
     path('api/reservations/get/', views.get_reservations),
+    path('api/reservations/delete/<int:reservation_id>/', views.delete_reservation),
 ] 

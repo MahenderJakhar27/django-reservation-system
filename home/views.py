@@ -35,8 +35,22 @@ def create_reservation(request):
         serializer.save()
         return Response({"message": "Reservation created successfully","data": serializer.data}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+@api_view([ 'GET'])
 def get_reservations(request):
     reservations = Reservation.objects.all().values()
     return JsonResponse(list(reservations), safe=False)
     
+@api_view(['DELETE'])
+def delete_reservation(request, reservation_id):
+    try:
+        reservation = Reservation.objects.get(id=reservation_id)
+        reservation.delete()
+        return JsonResponse(
+            {"message": "Reservation deleted successfully"},
+            status=status.HTTP_200_OK
+        )
+    except Reservation.DoesNotExist:
+        return JsonResponse(
+            {"error": "Reservation not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
