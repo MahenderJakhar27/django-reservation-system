@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Reservations</title>
+</head>
+<body>
+
+<h2>All Reservations</h2>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Guest Count</th>
+        <th>Date</th>
+        <th>Comments</th>
+        <th>Booking Number</th>
+    </tr>
+
+    {% for r in reservations %}
+    <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.first_name }}</td>
+        <td>{{ r.last_name }}</td>
+        <td>{{ r.guest_count }}</td>
+        <td>{{ r.reservation_date }}</td>
+        <td>{{ r.commants }}</td>
+        <td>{{ r.booking_number }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">No reservations found.</td></tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="{% url 'home' %}">⬅ Back to Home</a>
+
+</body>
+</html>

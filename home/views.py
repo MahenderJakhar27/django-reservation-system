@@ -26,7 +26,7 @@ def home(request):
         if form.is_valid():
             form.save()
             return HttpResponse("Reservation created successfully!") 
-    return render(request, 'index.html', {'form': form})
+    return render(request, 'create_reservation.html', {'form': form})
 
 @api_view([ 'POST'])
 def create_reservation(request):
@@ -54,3 +54,8 @@ def delete_reservation(request, reservation_id):
             {"error": "Reservation not found"},
             status=status.HTTP_404_NOT_FOUND
         )
+def index(request):
+    return render(request, 'home_page.html')
+def show_reservations(request):
+    reservations = Reservation.objects.all().order_by('-id')
+    return render(request, 'show_reservations.html', {'reservations': reservations})

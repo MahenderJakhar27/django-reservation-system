@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation System</title>
+</head>
+<body>
+    <h1>Welcome to Reservation System</h1>
+
+    <a href="{% url 'create_reservation' %}">
+        <button style="padding:10px 20px; margin:10px;">Make Reservation</button>
+    </a>
+
+    <a href="{% url 'show_reservations' %}">
+        <button style="padding:10px 20px; margin:10px;">Show Reservations</button>
+    </a>
+
+</body>
+</html>
