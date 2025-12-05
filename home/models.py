@@ -18,4 +18,9 @@ class Reservation(models.Model):
             self.booking_number = str(uuid.uuid4())[:8]   # small unique code
         super().save(*args, **kwargs)
 
+class Payment(models.Model):
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_date = models.DateTimeField(auto_now_add=True)
+
      
