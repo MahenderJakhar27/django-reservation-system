@@ -24,5 +24,6 @@ class Payment(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateTimeField(auto_now_add=True)
+    print("hi")
 
      
