@@ -13,6 +13,8 @@ from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
+from .forms import PaymentForm
+from .models import Payment
 
 # Create your views here.
 def hello_world(request):
@@ -82,3 +84,18 @@ def login_api(request):
         return Response({"token": token.key, "username": user.username})
 
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+def create_payment(request):
+    form = PaymentForm()
+
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('show_payments')
+
+    return render(request, 'create_payment.html', {'form': form})
+
+def show_payments(request):
+    payments = Payment.objects.select_related('reservation').order_by('-id')
+    return render(request, 'show_payments.html', {'payments': payments})

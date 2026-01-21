@@ -17,6 +17,8 @@ class Reservation(models.Model):
             import uuid
             self.booking_number = str(uuid.uuid4())[:8]   # small unique code
         super().save(*args, **kwargs)
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.booking_number})"
 
 class Payment(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
