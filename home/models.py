@@ -10,7 +10,7 @@ class Reservation(models.Model):
     last_name = models.CharField(max_length=50)
     guest_count = models.IntegerField()
     reservation_date = models.DateTimeField(auto_now=True)
-    commants = models.CharField(max_length=200)
+    comments = models.CharField(max_length=200)
     booking_number = models.CharField(max_length=100, unique=True, null=True, blank=True)
     def save(self, *args, **kwargs):
         if not self.booking_number:
