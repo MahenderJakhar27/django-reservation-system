@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Make Payment</title>
+</head>
+<body>
+
+<h2>Make Payment</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Pay</button>
+</form>
+
+<br>
+<a href="{% url 'home' %}">⬅ Back to Home</a>
+
+</body>
+</html>

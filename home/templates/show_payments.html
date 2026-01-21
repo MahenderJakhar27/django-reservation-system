@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Payments</title>
+</head>
+<body>
+
+<h2>All Payments</h2>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Booking Number</th>
+        <th>Customer</th>
+        <th>Amount</th>
+        <th>Payment Date</th>
+    </tr>
+
+    {% for p in payments %}
+    <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.reservation.booking_number }}</td>
+        <td>{{ p.reservation.first_name }} {{ p.reservation.last_name }}</td>
+        <td>{{ p.amount }}</td>
+        <td>{{ p.payment_date }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">No payments found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="{% url 'home' %}">⬅ Back to Home</a>
+
+</body>
+</html>
