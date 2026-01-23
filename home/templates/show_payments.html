@@ -1,38 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>All Payments</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #555;
+        }
+
+        .amount {
+            font-weight: bold;
+            color: #28a745;
+        }
+    </style>
 </head>
+
 <body>
 
-<h2>All Payments</h2>
+<div class="container">
+    <h2>All Payments</h2>
 
-<table border="1" cellpadding="5">
-    <tr>
-        <th>ID</th>
-        <th>Booking Number</th>
-        <th>Customer</th>
-        <th>Amount</th>
-        <th>Payment Date</th>
-    </tr>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Booking Number</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Payment Date</th>
+        </tr>
 
-    {% for p in payments %}
-    <tr>
-        <td>{{ p.id }}</td>
-        <td>{{ p.reservation.booking_number }}</td>
-        <td>{{ p.reservation.first_name }} {{ p.reservation.last_name }}</td>
-        <td>{{ p.amount }}</td>
-        <td>{{ p.payment_date }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="5">No payments found.</td>
-    </tr>
-    {% endfor %}
-</table>
+        {% for p in payments %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.reservation.booking_number }}</td>
+            <td>{{ p.reservation.first_name }} {{ p.reservation.last_name }}</td>
+            <td class="amount">₹ {{ p.amount }}</td>
+            <td>{{ p.payment_date|date:"d M Y, h:i A" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No payments found.</td>
+        </tr>
+        {% endfor %}
+    </table>
 
-<br>
-<a href="{% url 'home' %}">⬅ Back to Home</a>
+    <a href="{% url 'home' %}" class="back-link">⬅ Back to Home</a>
+</div>
 
 </body>
 </html>
