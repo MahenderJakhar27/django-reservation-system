@@ -4,23 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservation System</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: #222;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .card a {
+            text-decoration: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-green {
+            background: #28a745;
+        }
+
+        .btn-purple {
+            background: #6f42c1;
+        }
+
+        .btn-dark {
+            background: #343a40;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Welcome to Reservation System</h1>
 
-    <a href="{% url 'create_reservation' %}">
-        <button style="padding:10px 20px; margin:10px;">Make Reservation</button>
-    </a>
+<div class="container">
+    <h1>Reservation System</h1>
 
-    <a href="{% url 'show_reservations' %}">
-        <button style="padding:10px 20px; margin:10px;">Show Reservations</button>
-    </a>
-    <a href="{% url 'create_payment' %}">
-    <button style="padding:10px 20px; margin:10px;">Make Payment</button>
-    </a>
+    <div class="card-grid">
 
-    <a href="{% url 'show_payments' %}">
-        <button style="padding:10px 20px; margin:10px;">Show Payments</button>
-    </a>
+        <div class="card">
+            <h3>Make Reservation</h3>
+            <p>Create a new reservation for a customer.</p>
+            <a href="{% url 'create_reservation' %}" class="btn">Create</a>
+        </div>
+
+        <div class="card">
+            <h3>View Reservations</h3>
+            <p>See all reservations and their payment status.</p>
+            <a href="{% url 'show_reservations' %}" class="btn btn-dark">View</a>
+        </div>
+
+        <div class="card">
+            <h3>Make Payment</h3>
+            <p>Pay for an existing reservation.</p>
+            <a href="{% url 'create_payment' %}" class="btn btn-green">Pay</a>
+        </div>
+
+        <div class="card">
+            <h3>View Payments</h3>
+            <p>Check all completed payments.</p>
+            <a href="{% url 'show_payments' %}" class="btn btn-purple">View</a>
+        </div>
+
+    </div>
+</div>
+
 </body>
 </html>

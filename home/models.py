@@ -9,7 +9,7 @@ class Reservation(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     guest_count = models.IntegerField()
-    reservation_date = models.DateTimeField()
+    reservation_date = models.DateField()
     comments = models.CharField(max_length=200)
     PaymentStatusCode =(
         (0,'Unpaid Bill'),
