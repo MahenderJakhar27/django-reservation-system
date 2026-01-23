@@ -17,6 +17,7 @@
         <th>Date</th>
         <th>Comments</th>
         <th>Booking Number</th>
+        <th>Payment Status</th>
     </tr>
 
     {% for r in reservations %}
@@ -28,6 +29,7 @@
         <td>{{ r.reservation_date }}</td>
         <td>{{ r.commants }}</td>
         <td>{{ r.booking_number }}</td>
+        <td>{{ r.get_payment_status_display }}</td>
     </tr>
     {% empty %}
     <tr><td colspan="6">No reservations found.</td></tr>

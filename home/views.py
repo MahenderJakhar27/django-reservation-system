@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from .forms import PaymentForm
 from .models import Payment
+from django.shortcuts import render, redirect
 
 # Create your views here.
 def hello_world(request):
@@ -91,7 +92,14 @@ def create_payment(request):
     if request.method == 'POST':
         form = PaymentForm(request.POST)
         if form.is_valid():
-            form.save()
+            payment = form.save(commit=False)
+            reservation = payment.reservation
+            if reservation.payment_status == 1:
+                return HttpResponse("This reservation is already paid")
+            payment.save()
+            reservation.payment_status = 1
+            reservation.save(update_fields=['payment_status'])
+
             return redirect('show_payments')
 
     return render(request, 'create_payment.html', {'form': form})
