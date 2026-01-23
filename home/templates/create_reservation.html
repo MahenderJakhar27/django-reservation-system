@@ -83,11 +83,29 @@
 <div class="container">
     <h2>Create Reservation</h2>
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save Reservation</button>
-    </form>
+<form id="reservationForm">
+    {% csrf_token %}
+
+    <label>First Name</label>
+    <input type="text" id="first_name" required>
+
+    <label>Last Name</label>
+    <input type="text" id="last_name" required>
+
+    <label>Guest Count</label>
+    <input type="number" id="guest_count" min="1" required>
+
+    <label>Reservation Date</label>
+    <input type="text" id="reservation_date" required>
+
+    <label>Comments</label>
+    <textarea id="comments"></textarea>
+
+    <button type="submit">Save Reservation</button>
+</form>
+
+<p id="message" style="margin-top:15px; text-align:center;"></p>
+
 
     <a href="{% url 'home' %}" class="back-link">⬅ Back to Home</a>
 </div>
@@ -101,6 +119,51 @@
         minDate: "today"
     });
 </script>
+<script>
+const form = document.getElementById("reservationForm");
+const messageBox = document.getElementById("message");
+
+form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const data = {
+        first_name: document.getElementById("first_name").value,
+        last_name: document.getElementById("last_name").value,
+        guest_count: document.getElementById("guest_count").value,
+        reservation_date: document.getElementById("reservation_date").value,
+        comments: document.getElementById("comments").value,
+    };
+
+    fetch("/app/api/reservations/create/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.reservation_id) {
+            messageBox.style.color = "green";
+            messageBox.innerHTML = `
+                ✅ Reservation Created<br>
+                Booking No: <b>${result.booking_number}</b><br>
+                Status: <b>${result.payment_status}</b>
+            `;
+            form.reset();
+        } else {
+            messageBox.style.color = "red";
+            messageBox.innerText = "❌ Error creating reservation";
+        }
+    })
+    .catch(() => {
+        messageBox.style.color = "red";
+        messageBox.innerText = "❌ Server error";
+    });
+});
+</script>
+
 
 </body>
 </html>

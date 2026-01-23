@@ -28,16 +28,16 @@ def home(request):
     return render(request, 'create_reservation.html', {'form': form})
 
 @api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def create_reservation(request):
+def create_reservation_api(request):
     serializer = ReservationCreateSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        reservation = serializer.save()
         return Response(
             {
                 "message": "Reservation created successfully",
-                "data": serializer.data
+                "reservation_id": reservation.id,
+                "booking_number": reservation.booking_number,
+                "payment_status": reservation.get_payment_status_display(),
             },
             status=status.HTTP_201_CREATED
         )

@@ -22,7 +22,51 @@
 
         h2 {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+        }
+
+        /* 🔍 Filter bar */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar input {
+            padding: 8px 12px;
+            width: 220px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
         }
 
         table {
@@ -47,7 +91,7 @@
         }
 
         .badge {
-            padding: 5px 10px;
+            padding: 5px 12px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: bold;
@@ -65,10 +109,11 @@
 
         .back-link {
             display: block;
-            margin-top: 20px;
+            margin-top: 25px;
             text-align: center;
             text-decoration: none;
             color: #555;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -77,15 +122,17 @@
 
 <div class="container">
     <h2>All Reservations</h2>
-    <input
-        type="number"
-        id="reservationId"
-        placeholder="Enter Reservation ID"
-        style="padding:6px; width:200px;"
-    />
 
-    <button onclick="loadReservations()">Search</button>
-    <button onclick="clearFilter()">Clear</button>
+    <!-- 🔍 Filter Section -->
+    <div class="filter-bar">
+        <input
+            type="number"
+            id="reservationId"
+            placeholder="Search by Reservation ID"
+        />
+        <button class="btn btn-primary" onclick="loadReservations()">Search</button>
+        <button class="btn btn-secondary" onclick="clearFilter()">Clear</button>
+    </div>
 
     <table id="reservation-table">
         <thead>
@@ -156,10 +203,8 @@ function clearFilter() {
     loadReservations();
 }
 
-// Load all reservations on page load
 loadReservations();
 </script>
-
 
 </body>
 </html>
