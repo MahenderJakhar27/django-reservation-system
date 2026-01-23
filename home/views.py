@@ -45,6 +45,9 @@ def create_reservation(request):
 @api_view(['GET'])
 def reservation_list_api(request):
     reservations = Reservation.objects.all().order_by('-id')
+    reservation_id=request.GET.get('id')
+    if reservation_id:
+        reservations=reservations.filter(id=reservation_id)
     serializer = ReservationListSerializer(reservations, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -77,6 +77,15 @@
 
 <div class="container">
     <h2>All Reservations</h2>
+    <input
+        type="number"
+        id="reservationId"
+        placeholder="Enter Reservation ID"
+        style="padding:6px; width:200px;"
+    />
+
+    <button onclick="loadReservations()">Search</button>
+    <button onclick="clearFilter()">Clear</button>
 
     <table id="reservation-table">
         <thead>
@@ -101,38 +110,54 @@
 </div>
 
 <script>
-fetch("/app/api/reservations/list/")
-.then(response => response.json())
-.then(data => {
-    const tbody = document.querySelector("#reservation-table tbody");
-    tbody.innerHTML = "";
+function loadReservations() {
+    const reservationId = document.getElementById("reservationId").value;
 
-    if (data.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='7'>No reservations found.</td></tr>";
-        return;
+    let url = "/app/api/reservations/list/";
+    if (reservationId) {
+        url += `?id=${reservationId}`;
     }
 
-    data.forEach(r => {
-        const badge = r.payment_status === 1
-            ? `<span class="badge badge-paid">Paid</span>`
-            : `<span class="badge badge-unpaid">Unpaid</span>`;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.querySelector("#reservation-table tbody");
+            tbody.innerHTML = "";
 
-        tbody.innerHTML += `
-            <tr>
-                <td>${r.id}</td>
-                <td>${r.first_name} ${r.last_name}</td>
-                <td>${r.guest_count}</td>
-                <td>${r.reservation_date}</td>
-                <td>${r.comments ?? ''}</td>
-                <td>${r.booking_number ?? '-'}</td>
-                <td>${badge}</td>
-            </tr>
-        `;
-    });
-})
-.catch(err => {
-    console.error("API Error:", err);
-});
+            if (data.length === 0) {
+                tbody.innerHTML =
+                    "<tr><td colspan='7'>No reservations found.</td></tr>";
+                return;
+            }
+
+            data.forEach(r => {
+                const badge = r.payment_status === 1
+                    ? `<span class="badge badge-paid">Paid</span>`
+                    : `<span class="badge badge-unpaid">Unpaid</span>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${r.id}</td>
+                        <td>${r.first_name} ${r.last_name}</td>
+                        <td>${r.guest_count}</td>
+                        <td>${r.reservation_date}</td>
+                        <td>${r.comments ?? ''}</td>
+                        <td>${r.booking_number ?? '-'}</td>
+                        <td>${badge}</td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(err => console.error("API Error:", err));
+}
+
+function clearFilter() {
+    document.getElementById("reservationId").value = "";
+    loadReservations();
+}
+
+// Load all reservations on page load
+loadReservations();
 </script>
 
 
