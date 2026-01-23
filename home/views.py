@@ -6,9 +6,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Reservation
-from .serializers import ReservationSerializer
-from django.http import JsonResponse
-from rest_framework.viewsets import ModelViewSet
+from .serializers import ReservationListSerializer, ReservationCreateSerializer
 from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -16,14 +14,8 @@ from rest_framework.authtoken.models import Token
 from .forms import PaymentForm
 from .models import Payment
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 
-# Create your views here.
-def hello_world(request):
-    return HttpResponse("Hello, World!")
-
-class HelloWorldView(View):
-    def get(self, request):
-        return HttpResponse("this is mahender jakhar")
     
 def home(request):
     form = ReservationForm()
@@ -35,22 +27,27 @@ def home(request):
             return HttpResponse("Reservation created successfully!") 
     return render(request, 'create_reservation.html', {'form': form})
 
-@api_view([ 'POST'])
+@api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def create_reservation(request):
-    serializer = ReservationSerializer(data=request.data)
+    serializer = ReservationCreateSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response({"message": "Reservation created successfully","data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                "message": "Reservation created successfully",
+                "data": serializer.data
+            },
+            status=status.HTTP_201_CREATED
+        )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-@api_view([ 'GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_reservations(request):
-    reservations = Reservation.objects.all().values()
-    return JsonResponse(list(reservations), safe=False)
-    
+@api_view(['GET'])
+def reservation_list_api(request):
+    reservations = Reservation.objects.all().order_by('-id')
+    serializer = ReservationListSerializer(reservations, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 @api_view(['DELETE'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -70,8 +67,7 @@ def delete_reservation(request, reservation_id):
 def index(request):
     return render(request, 'home_page.html')
 def show_reservations(request):
-    reservations = Reservation.objects.all().order_by('-id')
-    return render(request, 'show_reservations.html', {'reservations': reservations})
+    return render(request, 'show_reservations.html')
 
 @api_view(['POST'])
 def login_api(request):
@@ -107,3 +103,4 @@ def create_payment(request):
 def show_payments(request):
     payments = Payment.objects.select_related('reservation').order_by('-id')
     return render(request, 'show_payments.html', {'payments': payments})
+

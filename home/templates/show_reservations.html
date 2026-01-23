@@ -78,42 +78,63 @@
 <div class="container">
     <h2>All Reservations</h2>
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Guests</th>
-            <th>Date</th>
-            <th>Comments</th>
-            <th>Booking No.</th>
-            <th>Payment Status</th>
-        </tr>
-
-        {% for r in reservations %}
-        <tr>
-            <td>{{ r.id }}</td>
-            <td>{{ r.first_name }} {{ r.last_name }}</td>
-            <td>{{ r.guest_count }}</td>
-            <td>{{ r.reservation_date|date:"Y-m-d" }}</td>
-            <td>{{ r.comments }}</td>
-            <td>{{ r.booking_number }}</td>
-            <td>
-                {% if r.payment_status == 1 %}
-                    <span class="badge badge-paid">Paid</span>
-                {% else %}
-                    <span class="badge badge-unpaid">Unpaid</span>
-                {% endif %}
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="7">No reservations found.</td>
-        </tr>
-        {% endfor %}
+    <table id="reservation-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Guests</th>
+                <th>Date</th>
+                <th>Comments</th>
+                <th>Booking No.</th>
+                <th>Payment Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="7">Loading...</td>
+            </tr>
+        </tbody>
     </table>
 
     <a href="{% url 'home' %}" class="back-link">⬅ Back to Home</a>
 </div>
+
+<script>
+fetch("/app/api/reservations/list/")
+.then(response => response.json())
+.then(data => {
+    const tbody = document.querySelector("#reservation-table tbody");
+    tbody.innerHTML = "";
+
+    if (data.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='7'>No reservations found.</td></tr>";
+        return;
+    }
+
+    data.forEach(r => {
+        const badge = r.payment_status === 1
+            ? `<span class="badge badge-paid">Paid</span>`
+            : `<span class="badge badge-unpaid">Unpaid</span>`;
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${r.id}</td>
+                <td>${r.first_name} ${r.last_name}</td>
+                <td>${r.guest_count}</td>
+                <td>${r.reservation_date}</td>
+                <td>${r.comments ?? ''}</td>
+                <td>${r.booking_number ?? '-'}</td>
+                <td>${badge}</td>
+            </tr>
+        `;
+    });
+})
+.catch(err => {
+    console.error("API Error:", err);
+});
+</script>
+
 
 </body>
 </html>

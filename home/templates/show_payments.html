@@ -71,6 +71,8 @@
             <th>Customer</th>
             <th>Amount</th>
             <th>Payment Date</th>
+            <th>Payment Code</th>
+
         </tr>
 
         {% for p in payments %}
@@ -80,6 +82,8 @@
             <td>{{ p.reservation.first_name }} {{ p.reservation.last_name }}</td>
             <td class="amount">₹ {{ p.amount }}</td>
             <td>{{ p.payment_date|date:"d M Y, h:i A" }}</td>
+            <td>{{ p.payment_code }}</td>
+
         </tr>
         {% empty %}
         <tr>

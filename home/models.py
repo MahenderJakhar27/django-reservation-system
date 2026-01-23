@@ -29,10 +29,19 @@ class Payment(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateTimeField(auto_now_add=True)
+    payment_code= models.CharField(max_length=20,unique=True,blank=True,null=True)
     def save(self, *args, **kwargs):
+        if not self.payment_code:
+            last_payment = Payment.objects.order_by('-id').first()
+            next_id = 1 if not last_payment else last_payment.id + 1
+            self.payment_code = f"PAY-{next_id:06d}"
         super().save(*args, **kwargs)
-        self.reservation.payment_status = 1
-        self.reservation.save()
+        if self.reservation.payment_status != 1:
+            self.reservation.payment_status = 1
+            self.reservation.save(update_fields=['payment_status'])
+
+    def __str__(self):
+        return self.payment_code
 
     def __str__(self):
         return f"Payment for {self.reservation.booking_number}"
