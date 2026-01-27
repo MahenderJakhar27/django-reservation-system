@@ -16,4 +16,6 @@ urlpatterns = [
     path('api/reservations/create/', views.create_reservation_api),
     path('api/reservations/delete/<int:reservation_id>/', views.delete_reservation),
     path('api/payments/create/', views.create_payment_api),
+    path('api/payments/list/', views.payment_list_api),
+
 ]

@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Reservation
-from .serializers import ReservationListSerializer, ReservationCreateSerializer,PaymentCreateSerializer
+from .serializers import ReservationListSerializer, ReservationCreateSerializer,PaymentCreateSerializer, PaymentListSerializer
 from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -110,3 +110,15 @@ def show_payments(request):
 
 def create_payment(request):
     return render(request, 'create_payment.html')
+
+@api_view(['GET'])
+def payment_list_api(request):
+    payments = Payment.objects.select_related('reservation').order_by('-id')
+
+    # optional filters
+    reservation_id = request.GET.get('reservation_id')
+    if reservation_id:
+        payments = payments.filter(reservation_id=reservation_id)
+
+    serializer = PaymentListSerializer(payments, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

@@ -65,35 +65,56 @@
     <h2>All Payments</h2>
 
     <table>
-        <tr>
-            <th>ID</th>
-            <th>Booking Number</th>
-            <th>Customer</th>
-            <th>Amount</th>
-            <th>Payment Date</th>
-            <th>Payment Code</th>
-
-        </tr>
-
-        {% for p in payments %}
-        <tr>
-            <td>{{ p.id }}</td>
-            <td>{{ p.reservation.booking_number }}</td>
-            <td>{{ p.reservation.first_name }} {{ p.reservation.last_name }}</td>
-            <td class="amount">₹ {{ p.amount }}</td>
-            <td>{{ p.payment_date|date:"d M Y, h:i A" }}</td>
-            <td>{{ p.payment_code }}</td>
-
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">No payments found.</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Booking Number</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Payment Date</th>
+                <th>Payment Code</th>
+            </tr>
+        </thead>
+        <tbody id="paymentTable">
+            <tr>
+                <td colspan="6">Loading payments...</td>
+            </tr>
+        </tbody>
     </table>
 
     <a href="{% url 'home' %}" class="back-link">⬅ Back to Home</a>
 </div>
+
+<script>
+fetch("/app/api/payments/list/")
+    .then(response => response.json())
+    .then(data => {
+        const table = document.getElementById("paymentTable");
+        table.innerHTML = "";
+
+        if (data.length === 0) {
+            table.innerHTML = `<tr><td colspan="6">No payments found</td></tr>`;
+            return;
+        }
+
+        data.forEach(p => {
+            table.innerHTML += `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>${p.booking_number}</td>
+                    <td>${p.customer_name}</td>
+                    <td class="amount">₹ ${p.amount}</td>
+                    <td>${new Date(p.payment_date).toLocaleString()}</td>
+                    <td>${p.payment_code}</td>
+                </tr>
+            `;
+        });
+    })
+    .catch(() => {
+        document.getElementById("paymentTable").innerHTML =
+            `<tr><td colspan="6">❌ Failed to load payments</td></tr>`;
+    });
+</script>
 
 </body>
 </html>

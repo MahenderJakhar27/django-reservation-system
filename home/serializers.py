@@ -58,3 +58,23 @@ class PaymentCreateSerializer(serializers.ModelSerializer):
             amount=validated_data['amount']
         )
         return payment
+class PaymentListSerializer(serializers.ModelSerializer):
+    reservation_id=serializers.IntegerField(source='reservation.id', read_only=True)
+    booking_number=serializers.CharField(source='reservation.booking_number', read_only=True)
+    customer_name=serializers.CharField(source='reservation.first_name'+'reservation.last_name', read_only=True)
+    payment_status_label=serializers.CharField(source='reservation.get_payment_status_display', read_only=True)
+
+    class Meta:
+        model = Payment
+        fields = [
+            'id',
+            'payment_code',
+            'reservation_id',
+            'booking_number',
+            'customer_name',
+            'amount',
+            'payment_date',
+            'payment_status_label',
+        ]
+    def get_customer_name(self, obj):
+        return f"{obj.reservation.first_name} {obj.reservation.last_name}"
