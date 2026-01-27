@@ -40,10 +40,8 @@ class Payment(models.Model):
             self.reservation.payment_status = 1
             self.reservation.save(update_fields=['payment_status'])
 
-    def __str__(self):
-        return self.payment_code
+def __str__(self):
+    return f"{self.payment_code} - {self.reservation.booking_number}"
 
-    def __str__(self):
-        return f"Payment for {self.reservation.booking_number}"
 
      

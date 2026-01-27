@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Reservation
-from .serializers import ReservationListSerializer, ReservationCreateSerializer
+from .serializers import ReservationListSerializer, ReservationCreateSerializer,PaymentCreateSerializer
 from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -36,8 +36,7 @@ def create_reservation_api(request):
             {
                 "message": "Reservation created successfully",
                 "reservation_id": reservation.id,
-                "booking_number": reservation.booking_number,
-                "payment_status": reservation.get_payment_status_display(),
+                "booking_number": reservation.booking_number
             },
             status=status.HTTP_201_CREATED
         )
@@ -85,25 +84,29 @@ def login_api(request):
 
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-def create_payment(request):
-    form = PaymentForm()
+@api_view(['POST'])
+def create_payment_api(request):
+    serializer = PaymentCreateSerializer(data=request.data)
+    if serializer.is_valid():
+        payment = serializer.save()
+        return Response(
+            {
+                "message": "Payment successful",
+                "payment_id": payment.id,
+                "payment_code": payment.payment_code,
+                "reservation_id": payment.reservation.id,
+                "payment_status": payment.reservation.get_payment_status_display(),
+                "amount": payment.amount,
+                "payment_date": payment.payment_date,
+            },
+            status=status.HTTP_201_CREATED
+        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    if request.method == 'POST':
-        form = PaymentForm(request.POST)
-        if form.is_valid():
-            payment = form.save(commit=False)
-            reservation = payment.reservation
-            if reservation.payment_status == 1:
-                return HttpResponse("This reservation is already paid")
-            payment.save()
-            reservation.payment_status = 1
-            reservation.save(update_fields=['payment_status'])
-
-            return redirect('show_payments')
-
-    return render(request, 'create_payment.html', {'form': form})
 
 def show_payments(request):
     payments = Payment.objects.select_related('reservation').order_by('-id')
     return render(request, 'show_payments.html', {'payments': payments})
 
+def create_payment(request):
+    return render(request, 'create_payment.html')
